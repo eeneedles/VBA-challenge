@@ -1,0 +1,163 @@
+Sub alphabetical_testing()
+
+    For Each ws In Worksheets
+        ws.Activate
+
+        Range("I1").Value = "Ticker"
+        Range("J1").Value = "Yearly Change"
+        Range("K1").Value = "Percentage"
+        Range("L1").Value = "Total Stock Volume"
+        Range("R1").Value = "Ticker"
+        Range("S1").Value = "Value"
+        Range("P2").Value = "Greatest % Increase"
+        Range("P3").Value = "Greatest % Decrease"
+        Range("P4").Value = "Greatest Total Volume"
+
+
+        Dim ticker As String
+        
+        Dim stock_total As Double
+        stock_total = 0
+        
+        Dim summary_table_row As Integer
+        summary_table_row = 2
+        
+        opening_price = Cells(2, "C").Value
+        
+        
+        row_count = Cells(Rows.Count, "A").End(xlUp).Row
+        
+    For i = 2 To row_count
+            
+        If Cells(i, "A").Value = Cells(i + 1, "A").Value Then
+            
+            
+                stock_total = stock_total + Cells(i, "G").Value
+                
+        Else
+            
+                ticker = Cells(i, "A").Value
+                
+                stock_total = stock_total + Cells(i, "G").Value
+                
+                closing_price = Cells(i, "F").Value
+                
+                yearly_change = closing_price - opening_price
+                
+                percentage_change = yearly_change / opening_price
+                
+                
+                
+                Range("I" & summary_table_row).Value = ticker
+                
+                Range("J" & summary_table_row).Value = yearly_change
+                
+                Range("K" & summary_table_row).Value = percentage_change
+                
+                Range("L" & summary_table_row).Value = stock_total
+                
+                
+                Range("K" & summary_table_row).NumberFormat = "0.00%"
+                
+                
+                    If yearly_change > 0 Then
+                    Range("J" & summary_table_row).Interior.Color = vbGreen
+                    
+                    ElseIf yearly_change < 0 Then
+                    Range("J" & summary_table_row).Interior.Color = vbRed
+                    
+                    Else
+                    Range("J" & summary_table_row).Interior.Color = vbWhite
+                    
+                    End If
+                
+                
+                summary_table_row = summary_table_row + 1
+                
+                stock_total = 0
+                
+                opening_price = Cells(i + 1, "C").Value
+                
+        
+        End If
+        
+    Next i
+        
+            Dim greatest_increase As Double
+            Dim greatest_decrease As Double
+            Dim greatest_volume As Double
+                
+            summary_count = Cells(Rows.Count, "K").End(xlUp).Row
+                
+                
+       
+            greatest_increase = 0
+            ticker = ""
+                
+       
+       For Row = 2 To summary_count
+       
+            If Cells(Row, "K").Value > greatest_increase Then
+            
+                greatest_increase = Cells(Row, "K").Value
+                
+                ticker = Cells(Row, "I").Value
+                
+            End If
+             
+        Next Row
+                
+            Range("S2").NumberFormat = "0.00%"
+        
+            Range("R2").Value = ticker
+        
+            Range("S2").Value = greatest_increase
+        
+        
+            greatest_decrease = 0
+            ticker = ""
+        
+        
+       For Row = 2 To summary_count
+       
+            If Cells(Row, "K").Value < greatest_decrease Then
+            
+                greatest_decrease = Cells(Row, "K").Value
+            
+                ticker = Cells(Row, "I").Value
+            
+            End If
+            
+        Next Row
+            
+            Range("S3").NumberFormat = "0.00%"
+        
+            Range("R3").Value = ticker
+        
+            Range("S3").Value = greatest_decrease
+        
+        
+            greatest_volume = 0
+            ticker = ""
+            
+        For Row = 2 To summary_count
+       
+            If Cells(Row, "L").Value > greatest_volume Then
+            
+                greatest_volume = Cells(Row, "L").Value
+            
+                ticker = Cells(Row, "I").Value
+            
+            End If
+            
+        Next Row
+    
+        
+            Range("R4").Value = ticker
+        
+            Range("S4").Value = greatest_decrease
+    
+        
+    Next ws
+
+End Sub
